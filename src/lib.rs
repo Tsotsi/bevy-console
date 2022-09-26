@@ -4,7 +4,7 @@
 use bevy::prelude::*;
 pub use bevy_console_derive::ConsoleCommand;
 pub use bevy_console_parser::{Value, ValueRawOwned};
-use bevy_egui::EguiPlugin;
+use bevy_egui::{EguiPlugin, EguiContext};
 
 use crate::commands::clear::{clear_command, ClearCommand};
 use crate::commands::exit::{exit_command, ExitCommand};
@@ -27,12 +27,14 @@ pub struct ConsolePlugin;
 
 impl Plugin for ConsolePlugin {
     fn build(&self, app: &mut App) {
+        if !app.world.contains_resource::<EguiContext>() {
+            app.add_plugin(EguiPlugin);
+        }
         app.init_resource::<ConsoleConfiguration>()
             .init_resource::<ConsoleState>()
             .init_resource::<ConsoleOpen>()
             .add_event::<ConsoleCommandEntered>()
             .add_event::<PrintConsoleLine>()
-            .add_plugin(EguiPlugin)
             .add_console_command::<ClearCommand, _, _>(clear_command)
             .add_console_command::<ExitCommand, _, _>(exit_command)
             .add_console_command::<HelpCommand, _, _>(help_command)
