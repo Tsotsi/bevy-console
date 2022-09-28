@@ -494,6 +494,48 @@ impl AddConsoleCommand for App {
     }
 }
 
+/// Add a console commands set to Bevy app.
+pub trait AddConsoleCommandSet{
+    /// Add a console command with a given system.
+    ///
+    /// This registers the console command so it will print with the built-in `help` console command.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use bevy::prelude::*;
+    /// # use bevy_console::{AddConsoleCommandSet, ConsoleCommand};
+    /// #
+    /// App::new()
+    ///     .add_console_command_set::<LogCommand>(SystemSet::new().with_system(log_command));
+    /// #
+    /// # /// Prints given arguments to the console.
+    /// # #[derive(ConsoleCommand)]
+    /// # #[console_command(name = "log")]
+    /// # struct LogCommand;
+    /// #
+    /// # fn log_command(mut log: ConsoleCommand<LogCommand>) {}
+    /// ```
+    fn add_console_command_set<T: CommandName + CommandHelp>(&mut self, console_set: SystemSet)-> &mut Self;
+}
+
+impl AddConsoleCommandSet for App{
+    fn add_console_command_set<T: CommandName + CommandHelp>(&mut self, console_set: SystemSet)-> &mut Self {
+        let sys = move |mut config: ResMut<ConsoleConfiguration>| {
+            let name = T::command_name();
+            if config.commands.contains_key(name) {
+                warn!(
+                    "console command '{}' already registered and was overwritten",
+                    name
+                );
+            }
+            config.commands.insert(name, T::command_help());
+        };
+
+        self.add_startup_system(sys).add_system_set(console_set)
+    }
+}
+
 /// Console open state
 #[derive(Default)]
 pub struct ConsoleOpen {

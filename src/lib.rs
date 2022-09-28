@@ -4,16 +4,16 @@
 use bevy::prelude::*;
 pub use bevy_console_derive::ConsoleCommand;
 pub use bevy_console_parser::{Value, ValueRawOwned};
-use bevy_egui::{EguiPlugin, EguiContext};
+use bevy_egui::{EguiContext, EguiPlugin};
 
 use crate::commands::clear::{clear_command, ClearCommand};
 use crate::commands::exit::{exit_command, ExitCommand};
 use crate::commands::help::{help_command, HelpCommand};
 use crate::console::{console_ui, receive_console_line, ConsoleState};
 pub use crate::console::{
-    AddConsoleCommand, CommandArgInfo, CommandArgs, CommandHelp, CommandInfo, CommandName,
-    ConsoleCommand, ConsoleCommandEntered, ConsoleConfiguration, ConsoleOpen, PrintConsoleLine,
-    ToggleConsoleKey,
+    AddConsoleCommand, AddConsoleCommandSet, CommandArgInfo, CommandArgs, CommandHelp, CommandInfo,
+    CommandName, ConsoleCommand, ConsoleCommandEntered, ConsoleConfiguration, ConsoleOpen,
+    PrintConsoleLine, ToggleConsoleKey,
 };
 pub use crate::value::{FromValue, FromValueError, ValueType};
 
